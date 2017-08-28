@@ -102,9 +102,7 @@ class TCPClientWrapper extends EventEmitter {
     }
 
 
-
-    CreateFromOption(options) {
-
+    release(){
         if(this.m_serial){
             this.m_serial.removeAllListeners('open');
             this.m_serial.removeAllListeners('data');
@@ -113,25 +111,14 @@ class TCPClientWrapper extends EventEmitter {
             this.m_serial.end();
             delete this.m_serial;
         }
-        this.m_serial  = net.createConnection(options.port,options.ip, () => {
-            // 'connect' listener
-            this.emit('open', data);
-        });
-        this.m_serial.on('data', (data) => {
-            this.emit('data', data);
-        });
-        this.m_serial.on('error', (data) => {
-            this.emit('error', data);
-        });
-        this.m_serial.on('connect', (data) => {
-            this.emit('open', data);
-        });
-        this.m_serial.on('end', (data) => {
-            this.emit('close', data);
-        })
-        this.m_serial.on('close', (data) => {
-            this.emit('close', data);
-        })
+    }
+
+    CreateFromOption(options) {
+
+        this.release();
+        this.ip = options.ip;
+        this.port = options.port;
+
     }
 
     writeData(data) {
@@ -181,6 +168,30 @@ class TCPClientWrapper extends EventEmitter {
             return defer.promise;
 
         });
+    }
+    open(){
+        this.m_serial  = Net.createConnection(this.port,this.ip, () => {
+            // 'connect' listener
+            this.emit('open', {});
+        });
+        this.m_serial.on('data', (data) => {
+            this.emit('data', data);
+        });
+        this.m_serial.on('error', (data) => {
+            this.emit('error', data);
+        });
+        this.m_serial.on('connect', (data) => {
+            this.emit('open', data);
+        });
+        this.m_serial.on('end', (data) => {
+            this.emit('close', data);
+        });
+        this.m_serial.on('close', (data) => {
+            this.emit('close', data);
+        })
+    }
+    close(){
+       this.release();
     }
 }
 const SerialState = {

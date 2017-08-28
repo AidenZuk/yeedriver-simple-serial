@@ -42,6 +42,11 @@ class SimpleSerial extends WorkerBase{
     initDriver(options) {
        // WorkerBase.prototype.initDriver(options);
 
+        if(!this.inited){
+            this.inited = true;
+            this.setRunningState(this.RUNNING_STATE.CONNECTED); //设置成运行中，允许数据收
+            this.setupEvent();
+        }
         let devType = 'serial';
         let opt = options && options.serial;
         if(options.net){
@@ -85,8 +90,8 @@ class SimpleSerial extends WorkerBase{
         }
     }
 
-    ReadWQ (mapItem, value, devId){
-        return this.CreateWQReader(mapItem,value,(reg)=>{
+    ReadWQ (mapItem,  devId){
+        return this.CreateWQReader(mapItem,(reg)=>{
             return this.devInfo[devId] && this.devInfo[devId].ReadWQ(devId,reg);
         })
     }

@@ -99,10 +99,10 @@ class CJT188Manager extends ClassFactory{
     parseDataField(data_field){
         if(data_field[0] === 0x90 && data_field[1] === 0x22){
 
-            let flow  = util.convertFromBCD(data_field,2,4,4);
-            let total = util.convertFromBCD(data_field,6,4,4);
-            let volt = (data_field[10]/0.1).toFixed(1);
-            let under = !!(data_field[11] & 0x04);
+            let flow  = util.convertFromBCD(data_field,3,4,10000);
+            let total = util.convertFromBCD(data_field,7,4,100);
+            let volt = data_field[11]/10;
+            let under = !!(data_field[13] & 0x04);
 
             return {F:flow,T:total,B:volt,U:under};
 
@@ -112,13 +112,13 @@ class CJT188Manager extends ClassFactory{
     }
     OnNewFrame(frameInfo){
         console.log('new data:',JSON.stringify(frameInfo));
-        let addr = util.convAddr[frameInfo.address];
+        let addr = util.convAddr(frameInfo.address);
         if(!this.devices[addr]){
             this.devices[addr] = new TLMeter(addr);
         }
 
         let regs = this.devices[addr].updateValue(this.parseDataField(frameInfo.data));
-        for(let i = 0; i < regs && regs.length;i++){
+        for(let i = 0; i < (regs && regs.length);i++){
             this.emit('regChanged',{devId:addr,memTag:'WQ',memId:regs[i]});
         }
     }

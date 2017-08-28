@@ -16,16 +16,30 @@ function convertFromBCD(buffer, offset, total_len, dec_len) {
         total += temp * multi;
         multi *= 100;
     }
-    return total / dec_len;
+    return total / (dec_len);
 }
 
 module.exports.convertFromBCD = convertFromBCD;
 
+
+function convertFromBCDInv(buffer, offset, total_len, dec_len) {
+    let multi = 1;
+    let total = 0;
+    for (let i = total_len-1; i >=0; i--) {
+        let temp = parseInt((buffer[offset + i] & 0xF) + (buffer[offset + i] >> 4) * 10);
+        total += temp * multi;
+        multi *= 100;
+    }
+    return total / (dec_len);
+}
+
+module.exports.convertFromBCDInv = convertFromBCDInv;
 function ConvAddr(addr_buffer){
     let addr_str="";
     for(let i = 0; i < addr_buffer.length;i++){
         addr_str += ("00"+addr_buffer[i].toString(16)).substr(-2);
     }
+    return addr_str;
 }
 
 module.exports.convAddr = ConvAddr;
