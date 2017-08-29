@@ -167,7 +167,7 @@ class CJT188Manager extends ClassFactory{
                     }
                     break;
                 case DL_STATE.WAIT_CS:
-                    if (oneByte === (this.cs_sum & 0xFF)) {
+                    if (oneByte === ((this.cs_sum-1) & 0xFF)) {
                         this.state = DL_STATE.WAIT_END;
                     } else {
                         if (oneByte === TAGS.START) {
