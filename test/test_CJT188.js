@@ -15,12 +15,12 @@ const SerialPort = require('serialport');
 describe('CJT188 Test', function(){
     describe('On Serial Port Test', function(){
         it('init driver', function(done){
-            driver.initDriver({serial:{
+            driver.initDriver({serial:JSON.stringify({
                 path:'/dev/ttyUSB0',
                 opts:{
                     baudRate:9600
                 },
-            },sids:{
+            }),sids:{
                 "01800914000000":"CJT188"
             }})
 

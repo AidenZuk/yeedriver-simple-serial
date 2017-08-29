@@ -48,14 +48,17 @@ class SimpleSerial extends WorkerBase{
             this.setupEvent();
         }
         let devType = 'serial';
-        let opt = options && options.serial;
+        let opt;
         if(options.net){
+            opt = _.isString(options.net)?eval(options.net):options.net;
             if(options.net.type === 'server'){
                 devType = 'server';
             }else{
                 devType = 'client';
             }
-            opt = options.net;
+
+        }else{
+            opt = _.isString(options.serial)?eval(options.net):options.net;
         }
 
         if(!this.actuator){
