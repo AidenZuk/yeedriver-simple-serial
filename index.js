@@ -69,7 +69,7 @@ class SimpleSerial extends WorkerBase{
             }
 
         }else{
-            opt = _.isString(options.serial)?__eval(options.net):options.net;
+            opt = _.isString(options.serial)?__eval(options.serial):options.serial;
         }
 
         if(!this.actuator){
