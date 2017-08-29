@@ -1,6 +1,6 @@
 {
   "name": "yeedriver-simple-serial",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "simple serial driver for yeedriver",
   "main": "index.js",
   "scripts": {
