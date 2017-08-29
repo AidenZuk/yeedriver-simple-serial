@@ -42,6 +42,17 @@ class SimpleSerial extends WorkerBase{
     initDriver(options) {
        // WorkerBase.prototype.initDriver(options);
 
+        function __eval(str){
+            try{
+                let script = new vm.Script(" definition = " + str);
+                let newObj = {};
+                script.runInNewContext(newObj);
+                return newObj.definition;
+            }catch(e){
+                console.error(e);
+            }
+
+        }
         if(!this.inited){
             this.inited = true;
             this.setRunningState(this.RUNNING_STATE.CONNECTED); //设置成运行中，允许数据收
@@ -50,7 +61,7 @@ class SimpleSerial extends WorkerBase{
         let devType = 'serial';
         let opt;
         if(options.net){
-            opt = _.isString(options.net)?eval(options.net):options.net;
+            opt = _.isString(options.net)?__eval(options.net):options.net;
             if(options.net.type === 'server'){
                 devType = 'server';
             }else{
@@ -58,7 +69,7 @@ class SimpleSerial extends WorkerBase{
             }
 
         }else{
-            opt = _.isString(options.serial)?eval(options.net):options.net;
+            opt = _.isString(options.serial)?__eval(options.net):options.net;
         }
 
         if(!this.actuator){
@@ -83,10 +94,8 @@ class SimpleSerial extends WorkerBase{
         });
         if (options.readConfig) {
             try {
-                let script = new vm.Script(" definition = " + options.readConfig);
-                let newObj = {};
-                script.runInNewContext(newObj);
-                this.SetAutoReadConfig(newObj.definition);
+
+                this.SetAutoReadConfig(__eval(options.readConfig));
             } catch (e) {
                 console.error('error in read config:', e.message || e);
             }
